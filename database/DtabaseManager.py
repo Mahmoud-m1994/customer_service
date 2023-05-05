@@ -2,6 +2,8 @@ from typing import Dict, Any
 
 import pyodbc
 
+from model.Action import _Action
+
 
 # DatabaseManager contains functions that Execute:
 # 1. general sql_query
@@ -48,22 +50,17 @@ def get_multiple_rows(sql_query, db_connector):
         return None
 
 
-def modify_row(table_name, id, data, db_connector, action) -> bool:
-    global values
+def delete_or_update_row(table_name: str, id: int, db_connector, action: _Action) -> bool:
     try:
         cursor = db_connector.cursor()
-        if action == "DELETE":
+        if action == _Action.DELETE:
             query = f"DELETE FROM {table_name} WHERE id = ?"
-        elif action == "UPDATE":
+        elif action == _Action.UPDATE:
             query = f"UPDATE {table_name} SET "
-            for column, value in data.items():
-                query += f"{column} = ?,"
-            query = query[:-1] + f" WHERE id = ?"
-            values = list(data.values())
-            values.append(id)
+            query += f" WHERE id = ?"
         else:
             raise ValueError("Invalid action parameter, must be DELETE or UPDATE")
-        cursor.execute(query, [id] if action == "DELETE" else values)
+        cursor.execute(query, [id])
         cursor.commit()
         cursor.close()
         return True
