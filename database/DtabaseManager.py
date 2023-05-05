@@ -28,8 +28,8 @@ def create_single_row(table_name: str, data: Dict[str, Any], db_connector: pyodb
 def get_single_row(table_name: str, id: int, db_connector: pyodbc.Connection):
     try:
         cursor = db_connector.cursor()
-        sql_query = f"SELECT * FROM {table_name} WHERE id = {id}"
-        cursor.execute(sql_query)
+        sql_query = f"SELECT * FROM {table_name} WHERE id = ?"
+        cursor.execute(sql_query, (id,))
         row = cursor.fetchone()
         cursor.close()
         return row
