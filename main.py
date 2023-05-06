@@ -9,4 +9,5 @@ app.register_blueprint(seller_api)
 # Other routes and configurations
 
 if __name__ == '__main__':
+    print("Hei from customer service")
     app.run()
