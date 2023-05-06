@@ -34,8 +34,12 @@ def get_seller(seller_id):
 
 @seller_api.route('/sellers', methods=['GET'])
 def get_sellers():
-    sellers = get_multiple_rows('Sellers')
-    return jsonify(sellers), 200
+    sql_query = "SELECT * FROM Sellers"
+    sellers = get_multiple_rows(sql_query)
+    if sellers:
+        return jsonify({'sellers': sellers}), 200
+    else:
+        return jsonify({'message': 'No sellers found'}), 404
 
 
 @seller_api.route('/seller/<int:seller_id>', methods=['PUT'])
