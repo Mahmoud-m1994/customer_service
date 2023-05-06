@@ -1,7 +1,7 @@
 from typing import Dict, Any
 
 import pyodbc
-
+from database.DatabaseConnection import create_db_connector
 from model.Action import _Action
 
 
@@ -11,7 +11,8 @@ from model.Action import _Action
 # 3. update and delete a single row
 
 
-def create_single_row(table_name: str, data: Dict[str, Any], db_connector: pyodbc.Connection) -> bool:
+def create_single_row(table_name: str, data: Dict[str, Any]) -> bool:
+    db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
         columns = ', '.join(data.keys())
@@ -25,7 +26,8 @@ def create_single_row(table_name: str, data: Dict[str, Any], db_connector: pyodb
         return False
 
 
-def get_single_row(table_name: str, id: int, db_connector: pyodbc.Connection):
+def get_single_row(table_name: str, id: int):
+    db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
         sql_query = f"SELECT * FROM {table_name} WHERE id = ?"
@@ -38,7 +40,8 @@ def get_single_row(table_name: str, id: int, db_connector: pyodbc.Connection):
         return None
 
 
-def get_multiple_rows(sql_query, db_connector):
+def get_multiple_rows(sql_query):
+    db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
         cursor.execute(sql_query)
@@ -50,7 +53,8 @@ def get_multiple_rows(sql_query, db_connector):
         return None
 
 
-def delete_or_update_row(table_name: str, id: int, db_connector, action: _Action) -> bool:
+def delete_or_update_row(table_name: str, id: int, action: _Action) -> bool:
+    db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
         if action == _Action.DELETE:
