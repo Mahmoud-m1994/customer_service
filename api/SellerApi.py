@@ -25,9 +25,14 @@ def create_seller():
 @seller_api.route('/seller/<int:seller_id>', methods=['GET'])
 def get_seller(seller_id):
     seller = get_single_row('Sellers', seller_id)
-
     if seller:
-        return jsonify(seller), 200
+        print(seller)
+        seller_dict = {}
+        for column in seller.cursor_description:
+            column_name = column[0]
+            value = getattr(seller, column_name)
+            seller_dict[column_name] = value
+        return jsonify(seller_dict), 200
     else:
         return jsonify({'message': 'Seller not found'}), 404
 
