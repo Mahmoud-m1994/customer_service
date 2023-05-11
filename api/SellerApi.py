@@ -16,7 +16,7 @@ def create_seller():
         result = create_single_row('Sellers', seller_data)
 
         if result:
-            username = seller_data.get('seller_name')
+            username = seller_data.get('SellerName')
             return jsonify({'message': f'Seller {username} created successfully'}), 200
         else:
             return jsonify({'message': 'Failed to create seller'}), 500
