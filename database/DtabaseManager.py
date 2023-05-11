@@ -46,11 +46,11 @@ def get_single_row(table_name: str, id: int):
         return json.dumps({'message': 'Error executing query'}), 500
 
 
-def get_multiple_rows(table_name):
+def get_multiple_rows(table_name: str, order_by: str):
     db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
-        sql_query = f"SELECT * FROM {table_name}"
+        sql_query = f"SELECT * FROM {table_name} ORDER BY {order_by} DESC"
         cursor.execute(sql_query)
         rows = cursor.fetchall()
         columns = [column[0] for column in cursor.description]

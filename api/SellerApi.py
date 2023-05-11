@@ -37,7 +37,7 @@ def get_seller(seller_id):
 
 @seller_api.route('/sellers', methods=['GET'])
 def get_sellers():
-    sellers = get_multiple_rows('Sellers')
+    sellers = get_multiple_rows('Sellers', 'SellerID')
     if sellers:
         return jsonify({'sellers': sellers}), 200
     else:
