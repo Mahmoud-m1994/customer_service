@@ -1,8 +1,7 @@
 from typing import Dict, Any
-
-import pyodbc
 from database.DatabaseConnection import create_db_connector
 from model.Action import _Action
+import json
 
 
 # DatabaseManager contains functions that Execute:
@@ -33,11 +32,18 @@ def get_single_row(table_name: str, id: int):
         sql_query = f"SELECT * FROM {table_name} WHERE SellerID = ?"
         cursor.execute(sql_query, (id,))
         row = cursor.fetchone()
-        cursor.close()
-        return row
+
+        if row:
+            # Convert row to dictionary
+            row_dict = dict(zip([column[0] for column in cursor.description], row))
+            cursor.close()
+            return json.dumps(row_dict), 200
+        else:
+            cursor.close()
+            return json.dumps({'message': 'Row not found'}), 404
     except Exception as e:
         print("Error executing query:", e)
-        return None
+        return json.dumps({'message': 'Error executing query'}), 500
 
 
 def get_multiple_rows(sql_query):
@@ -47,7 +53,9 @@ def get_multiple_rows(sql_query):
         cursor.execute(sql_query)
         rows = cursor.fetchall()
         cursor.close()
-        return rows
+        # Convert rows to a list of dictionaries
+        result = [dict(row) for row in rows]
+        return result
     except Exception as e:
         print("Error executing query:", e)
         return None

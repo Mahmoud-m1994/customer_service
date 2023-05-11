@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, request, jsonify
 from database.DtabaseManager import get_single_row, get_multiple_rows, create_single_row, delete_or_update_row, _Action
 
@@ -26,12 +28,8 @@ def create_seller():
 def get_seller(seller_id):
     seller = get_single_row('Sellers', seller_id)
     if seller:
-        print(seller)
-        seller_dict = {}
-        for column in seller.cursor_description:
-            column_name = column[0]
-            value = getattr(seller, column_name)
-            seller_dict[column_name] = value
+        seller_json_str = seller[0]
+        seller_dict = json.loads(seller_json_str)
         return jsonify(seller_dict), 200
     else:
         return jsonify({'message': 'Seller not found'}), 404
@@ -39,21 +37,12 @@ def get_seller(seller_id):
 
 @seller_api.route('/sellers', methods=['GET'])
 def get_sellers():
-    sql_query = "SELECT * FROM Sellers"
+    sql_query = f"SELECT * FROM Sellers"
     sellers = get_multiple_rows(sql_query)
     if sellers:
         return jsonify({'sellers': sellers}), 200
     else:
         return jsonify({'message': 'No sellers found'}), 404
-
-
-@seller_api.route('/seller/<int:seller_id>', methods=['PUT'])
-def update_seller(seller_id):
-    result = delete_or_update_row('Sellers', seller_id, _Action.UPDATE)
-    if result:
-        return jsonify({'message': 'Seller updated successfully'}), 200
-    else:
-        return jsonify({'message': 'Failed to update seller'}), 500
 
 
 @seller_api.route('/seller/<int:seller_id>', methods=['DELETE'])
