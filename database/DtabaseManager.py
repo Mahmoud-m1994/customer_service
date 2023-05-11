@@ -46,15 +46,21 @@ def get_single_row(table_name: str, id: int):
         return json.dumps({'message': 'Error executing query'}), 500
 
 
-def get_multiple_rows(sql_query):
+def get_multiple_rows(table_name):
     db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
+        sql_query = f"SELECT * FROM {table_name}"
         cursor.execute(sql_query)
         rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description]
         cursor.close()
-        # Convert rows to a list of dictionaries
-        result = [dict(row) for row in rows]
+        result = []
+        for row in rows:
+            row_dict = {}
+            for i, value in enumerate(row):
+                row_dict[columns[i]] = value
+            result.append(row_dict)
         return result
     except Exception as e:
         print("Error executing query:", e)

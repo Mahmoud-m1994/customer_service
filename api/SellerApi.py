@@ -37,8 +37,7 @@ def get_seller(seller_id):
 
 @seller_api.route('/sellers', methods=['GET'])
 def get_sellers():
-    sql_query = f"SELECT * FROM Sellers"
-    sellers = get_multiple_rows(sql_query)
+    sellers = get_multiple_rows('Sellers')
     if sellers:
         return jsonify({'sellers': sellers}), 200
     else:
