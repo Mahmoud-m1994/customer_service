@@ -46,9 +46,9 @@ def get_sellers():
 
 @seller_api.route('/seller/<int:seller_id>', methods=['DELETE'])
 def delete_seller(seller_id):
-    result = delete_or_update_row('Sellers', seller_id, _Action.DELETE)
+    result = delete_or_update_row('Sellers', seller_id, 'SellerID', _Action.DELETE)
 
     if result:
-        return jsonify({'message': 'Seller deleted successfully'}), 200
+        return jsonify({'message': f'Seller with id = {seller_id} deleted successfully'}), 200
     else:
         return jsonify({'message': 'Failed to delete seller'}), 500
