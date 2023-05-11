@@ -44,6 +44,20 @@ def get_sellers():
         return jsonify({'message': 'No sellers found'}), 404
 
 
+@seller_api.route('/seller/<int:seller_id>', methods=['PUT'])
+def update_seller(seller_id):
+    try:
+        # Get the JSON data from the request
+        seller_data = request.get_json()
+
+        # Call the delete_or_update_row function to update the seller
+        result = delete_or_update_row('Sellers', seller_id, 'SellerID', _Action.UPDATE, seller_data)
+
+        return jsonify({'seller_id': seller_id, 'success': result, 'message': 'Seller updated successfully' if result else 'Failed to update seller'}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error updating seller', 'error': str(e)}), 500
+
+
 @seller_api.route('/seller/<int:seller_id>', methods=['DELETE'])
 def delete_seller(seller_id):
     result = delete_or_update_row('Sellers', seller_id, 'SellerID', _Action.DELETE)

@@ -67,18 +67,24 @@ def get_multiple_rows(table_name: str, order_by: str):
         return None
 
 
-def delete_or_update_row(table_name: str, id: int, id_str: str, action: _Action) -> bool:
+def delete_or_update_row(table_name: str, id: int, id_str: str, action: _Action, data: Dict[str, Any] = None) -> bool:
     db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
         if action == _Action.DELETE:
             query = f"DELETE FROM {table_name} WHERE {id_str} = ?"
+            cursor.execute(query, [id])
         elif action == _Action.UPDATE:
-            query = f"UPDATE {table_name} SET "
-            query += f" WHERE {id_str} = ?"
+            if data is None:
+                raise ValueError("Data parameter is required for UPDATE action")
+            columns = ', '.join(f"{column} = ?" for column in data.keys())
+            values = list(data.values())
+            query = f"UPDATE {table_name} SET {columns} WHERE {id_str} = ?"
+            values.append(id)
+            cursor.execute(query, values)
         else:
             raise ValueError("Invalid action parameter, must be DELETE or UPDATE")
-        cursor.execute(query, [id])
+
         cursor.commit()
         cursor.close()
         return True
