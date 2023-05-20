@@ -4,12 +4,6 @@ from model.Action import _Action
 import json
 
 
-# DatabaseManager contains functions that Execute:
-# 1. general sql_query
-# 2. get single/ multiple row(s)
-# 3. update and delete a single row
-
-
 def create_single_row(table_name: str, data: Dict[str, Any]) -> bool:
     db_connector = create_db_connector()
     try:

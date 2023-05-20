@@ -1,7 +1,7 @@
 import json
 
 from flask import Blueprint, request, jsonify
-from database.DtabaseManager import get_single_row, get_multiple_rows, create_single_row, delete_or_update_row, _Action
+from database.DatabaseManager import get_single_row, get_multiple_rows, create_single_row, delete_or_update_row, _Action
 
 seller_api = Blueprint('seller_api', __name__)
 
