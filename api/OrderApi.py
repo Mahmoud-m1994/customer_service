@@ -1,26 +1,59 @@
-import json
+import os
+
+import requests
+from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify
 from database.DatabaseManager import get_single_row, get_multiple_rows, create_single_row, delete_or_update_row, _Action
 
+load_dotenv()
 order_api = Blueprint('orders_api', __name__)
 
 
-@order_api.route('/order', methods=['POST'])
+@order_api.route('/orders', methods=['POST'])
 def create_order():
     try:
-        # Get the JSON data from the request
         order_data = request.get_json()
 
-        # Call the create_single_row function to create a new order
         result = create_single_row('Orders', order_data)
 
         if result:
             order_id = order_data.get('OrderID')
-            return jsonify({'message': f'Order {order_id} created successfully'}), 200
+
+            products = order_data.get('products', [])
+
+            for product_data in products:
+                base_url = os.getenv('API_URL')
+                response = requests.post(f'{base_url}/orders/{order_id}/products', json=product_data)
+
+                if response.status_code != 200:
+                    return jsonify({'message': 'Failed to add products to order'}), 500
+
+            return jsonify({'message': f'Order {order_id} created successfully and products added'}), 200
         else:
             return jsonify({'message': 'Failed to create order'}), 500
     except Exception as e:
         return jsonify({'message': 'Error creating order', 'error': str(e)}), 500
+
+
+@order_api.route('/orders/<int:order_id>/products', methods=['POST'])
+def add_product_to_order(order_id):
+    try:
+        # Get the JSON data from the request
+        product_data = request.get_json()
+
+        # Call the create_single_row function to add the product to the order
+        result = create_single_row('OrderProducts', {
+            'OrderID': order_id,
+            'ProductID': product_data['ProductID'],
+            'Quantity': product_data['Quantity']
+        })
+
+        if result:
+            return jsonify({'message': f'Product added to order {order_id} successfully'}), 200
+        else:
+            return jsonify({'message': 'Failed to add product to order'}), 500
+    except Exception as e:
+        return jsonify({'message': 'Error adding product to order', 'error': str(e)}), 500
 
 
 @order_api.route('/order/<int:order_id>', methods=['GET'])
