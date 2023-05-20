@@ -85,3 +85,17 @@ def delete_or_update_row(table_name: str, id: int, id_str: str, action: _Action,
     except Exception as e:
         print("Error executing query:", e)
         return False
+
+
+def add_product_to_order(order_id: int, product_id: int, quantity: int) -> bool:
+    db_connector = create_db_connector()
+    try:
+        cursor = db_connector.cursor()
+        cursor.execute("INSERT INTO OrderProducts (OrderID, ProductID, Quantity) VALUES (?, ?, ?)",
+                       (order_id, product_id, quantity))
+        cursor.commit()
+        cursor.close()
+        return True
+    except Exception as e:
+        print("Error executing query:", e)
+        return False
