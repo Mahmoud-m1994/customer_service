@@ -26,7 +26,7 @@ def create_seller():
 
 @seller_api.route('/seller/<int:seller_id>', methods=['GET'])
 def get_seller(seller_id):
-    seller = get_single_row('Sellers', seller_id)
+    seller = get_single_row('Sellers', 'SellerID', seller_id)
     if seller:
         seller_json_str = seller[0]
         seller_dict = json.loads(seller_json_str)

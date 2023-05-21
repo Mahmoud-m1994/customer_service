@@ -19,11 +19,11 @@ def create_single_row(table_name: str, data: Dict[str, Any]) -> bool:
         return False
 
 
-def get_single_row(table_name: str, id: int):
+def get_single_row(table_name: str, get_by_column: str, id: int):
     db_connector = create_db_connector()
     try:
         cursor = db_connector.cursor()
-        sql_query = f"SELECT * FROM {table_name} WHERE SellerID = ?"
+        sql_query = f"SELECT * FROM {table_name} WHERE {get_by_column} = ?"
         cursor.execute(sql_query, (id,))
         row = cursor.fetchone()
 

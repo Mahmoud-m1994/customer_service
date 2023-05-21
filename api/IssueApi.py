@@ -21,7 +21,7 @@ def create_issue():
 
 @issues_api.route('/issues/<int:issue_id>', methods=['GET'])
 def get_issue(issue_id):
-    issue = get_single_row('Issues', issue_id)
+    issue = get_single_row('Issues', 'IssueID', issue_id)
     if issue:
         issue_json_str = issue[0]
         issue_dict = json.loads(issue_json_str)

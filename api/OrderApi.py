@@ -58,7 +58,7 @@ def add_product_to_order(order_id):
 
 @order_api.route('/order/<int:order_id>', methods=['GET'])
 def get_order(order_id):
-    order = get_single_row('Orders', order_id)
+    order = get_single_row('Orders','OrderID', order_id)
     if order:
         order_dict = {column: value for column, value in order.items()}
         return jsonify(order_dict), 200

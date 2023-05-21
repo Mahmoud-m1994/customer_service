@@ -26,7 +26,7 @@ def create_product():
 
 @product_api.route('/product/<int:product_id>', methods=['GET'])
 def get_product(product_id):
-    product = get_single_row('ProductName', product_id)
+    product = get_single_row('Product1', 'ProductID', product_id)
     if product:
         product_json_str = product[0]
         product_dict = json.loads(product_json_str)
