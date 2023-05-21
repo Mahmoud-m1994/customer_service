@@ -8,7 +8,7 @@ CREATE TABLE Sellers (
 CREATE TABLE Product1 (
     ProductID INT PRIMARY KEY,
     ProductName VARCHAR(50) NOT NULL,
-    Price DECIMAL(10, 2) NOT NULL,
+    Price FLOAT NOT NULL,
     Description VARCHAR(255)
 );
 
