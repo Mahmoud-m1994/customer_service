@@ -68,23 +68,63 @@ To run the Customer Service API, follow these steps:
 To interact with the Customer Service API, I used PostMan. You can use another HTTP client or build Frontend application to send requests and handle response.
 Here are some example requests using PostMan:
 
-1. **Create a new seller:**
+1. **Create a new Order:**
+   2. To make sure that order is connected to their products I send list of products with the request
+   3. If order created, I insert Products value to OrderProducts table as shown down below
+   ```
+   @order_api.route('/order', methods=['POST'])
+      def create_order():
+          try:
+              order_data = request.get_json()
+
+              order = {
+                  'OrderID': order_data.get('OrderID'),
+                  'CustomerName': order_data.get('CustomerName'),
+                  'OrderDate': order_data.get('OrderDate'),
+                  'TotalAmount': order_data.get('TotalAmount'),
+                  'SellerID': order_data.get('SellerID')
+              }
+      
+              result = create_single_row('Orders', order)
+      
+              if result:
+                  order_id = order.get('OrderID')
+                  base_url = os.getenv('API_URL')
+                  products = order_data.get('Products', [])
+                  for product_data in products:
+                      response = requests.post(f'{base_url}/order/{order_id}/products', json=product_data)
+      
+                      if response.status_code != 200:
+                          return jsonify({'message': 'Failed to add products to order'}), 500
+      
+                  return jsonify({'message': f'Order {order_id} created successfully and products added'}), 200
+              ...
+   ```
+   
+      ![Create Seller](images/craete_order.png)
+
+2. **Result from azure Query editor showing updated data after creating order nr 10:**
+
+
+   ![Create Seller](images/connect_products_to_order.png)
+
+3. **Create a new seller:**
 
    ![Create Seller](images/create_seller.png)
 
-2. **Get seller by id:**
+4. **Get seller by id:**
 
    ![Get Seller](images/get_single_seller.png)
    
-3. **Get all sellers:**
+5. **Get all sellers:**
 
    ![Get Sellers](images/get_sellers.png)
 
-4. **Update an seller:**
+6. **Update an seller:**
 
    ![Update Seller](images/update_seller.png)
 
-5. **Delete an seller:**
+7. **Delete an seller:**
 
    ![Delete Seller](images/delete_seller.png)
 
