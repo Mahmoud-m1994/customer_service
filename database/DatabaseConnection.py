@@ -1,17 +1,11 @@
 import pyodbc
-import os
 from dotenv import load_dotenv
-
+from utilities.ServerConnector import get_connection_string
 load_dotenv()
 
 
 def create_db_connector():
-    server = os.getenv('SERVER')
-    database = os.getenv('DATABASE')
-    username = os.getenv('USERNAME')
-    password = os.getenv('PASSWORD')
-    driver = os.getenv('DRIVER')
-    connection_string = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+    connection_string = get_connection_string()
     try:
         conn = pyodbc.connect(connection_string)
         print("Connection successful!", conn)
