@@ -16,16 +16,22 @@ def create_order():
     try:
         order_data = request.get_json()
 
-        result = create_single_row('Orders', order_data)
+        order = {
+            'OrderID': order_data.get('OrderID'),
+            'CustomerName': order_data.get('CustomerName'),
+            'OrderDate': order_data.get('OrderDate'),
+            'TotalAmount': order_data.get('TotalAmount'),
+            'SellerID': order_data.get('SellerID')
+        }
+
+        result = create_single_row('Orders', order)
 
         if result:
-            order_id = order_data.get('OrderID')
-
-            products = order_data.get('products', [])
-
+            order_id = order.get('OrderID')
+            base_url = os.getenv('API_URL')
+            products = order_data.get('Products', [])
             for product_data in products:
-                base_url = os.getenv('API_URL')
-                response = requests.post(f'{base_url}/orders/{order_id}/products', json=product_data)
+                response = requests.post(f'{base_url}/order/{order_id}/products', json=product_data)
 
                 if response.status_code != 200:
                     return jsonify({'message': 'Failed to add products to order'}), 500
@@ -88,7 +94,8 @@ def update_order(order_id):
         # Call the delete_or_update_row function to update the order
         result = delete_or_update_row('Orders', order_id, 'OrderID', _Action.UPDATE, order_data)
 
-        return jsonify({'order_id': order_id, 'success': result, 'message': 'Order updated successfully' if result else 'Failed to update order'}), 200
+        return jsonify({'order_id': order_id, 'success': result,
+                        'message': 'Order updated successfully' if result else 'Failed to update order'}), 200
     except Exception as e:
         return jsonify({'message': 'Error updating order', 'error': str(e)}), 500
 
