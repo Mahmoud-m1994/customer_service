@@ -16,7 +16,7 @@ CREATE TABLE Orders (
     OrderID INT PRIMARY KEY,
     CustomerName VARCHAR(50) NOT NULL,
     OrderDate DATETIME NOT NULL,
-    TotalAmount DECIMAL(10, 2) NOT NULL,
+    TotalAmount FLOAT(10, 2) NOT NULL,
     SellerID INT NOT NULL,
     FOREIGN KEY (SellerID) REFERENCES Sellers(SellerID)
 );
