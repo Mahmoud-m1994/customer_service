@@ -2,6 +2,7 @@ from typing import Dict, Any
 from database.DatabaseConnection import create_db_connector
 from model.Action import _Action
 import json
+from datetime import datetime
 
 
 def create_single_row(table_name: str, data: Dict[str, Any]) -> bool:
@@ -29,7 +30,12 @@ def get_single_row(table_name: str, get_by_column: str, id: int):
 
         if row:
             # Convert row to dictionary
-            row_dict = dict(zip([column[0] for column in cursor.description], row))
+            row_dict = {}
+            for column, value in zip([column[0] for column in cursor.description], row):
+                if isinstance(value, datetime):
+                    value = str(value)
+                row_dict[column] = value
+
             cursor.close()
             return json.dumps(row_dict), 200
         else:

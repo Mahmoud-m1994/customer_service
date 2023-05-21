@@ -1,15 +1,17 @@
+import json
 import os
 
 import requests
 from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify
 from database.DatabaseManager import get_single_row, get_multiple_rows, create_single_row, delete_or_update_row, _Action
+from datetime import datetime
 
 load_dotenv()
 order_api = Blueprint('orders_api', __name__)
 
 
-@order_api.route('/orders', methods=['POST'])
+@order_api.route('/order', methods=['POST'])
 def create_order():
     try:
         order_data = request.get_json()
@@ -35,7 +37,7 @@ def create_order():
         return jsonify({'message': 'Error creating order', 'error': str(e)}), 500
 
 
-@order_api.route('/orders/<int:order_id>/products', methods=['POST'])
+@order_api.route('/order/<int:order_id>/products', methods=['POST'])
 def add_product_to_order(order_id):
     try:
         # Get the JSON data from the request
@@ -58,9 +60,10 @@ def add_product_to_order(order_id):
 
 @order_api.route('/order/<int:order_id>', methods=['GET'])
 def get_order(order_id):
-    order = get_single_row('Orders','OrderID', order_id)
+    order = get_single_row('Orders', 'OrderID', order_id)
     if order:
-        order_dict = {column: value for column, value in order.items()}
+        order_json_str = order[0]
+        order_dict = json.loads(order_json_str)
         return jsonify(order_dict), 200
     else:
         return jsonify({'message': 'Order not found'}), 404
