@@ -5,7 +5,7 @@ from database.DatabaseManager import get_single_row, get_multiple_rows, create_s
 issues_api = Blueprint('issues_api', __name__)
 
 
-@issues_api.route('/issues', methods=['POST'])
+@issues_api.route('/issue', methods=['POST'])
 def create_issue():
     try:
         issue_data = request.get_json()
@@ -19,7 +19,7 @@ def create_issue():
         return jsonify({'message': 'Error creating issue', 'error': str(e)}), 500
 
 
-@issues_api.route('/issues/<int:issue_id>', methods=['GET'])
+@issues_api.route('/issue/<int:issue_id>', methods=['GET'])
 def get_issue(issue_id):
     issue = get_single_row('Issues', 'IssueID', issue_id)
     if issue:
@@ -39,7 +39,7 @@ def get_issues():
         return jsonify({'message': 'No issues found'}), 404
 
 
-@issues_api.route('/issues/<int:issue_id>', methods=['PUT'])
+@issues_api.route('/issue/<int:issue_id>', methods=['PUT'])
 def update_issue(issue_id):
     try:
         issue_data = request.get_json()
@@ -50,7 +50,7 @@ def update_issue(issue_id):
         return jsonify({'message': 'Error updating issue', 'error': str(e)}), 500
 
 
-@issues_api.route('/issues/<int:issue_id>', methods=['DELETE'])
+@issues_api.route('/issue/<int:issue_id>', methods=['DELETE'])
 def delete_issue(issue_id):
     result = delete_or_update_row('Issues', issue_id, 'IssueID', _Action.DELETE)
 
