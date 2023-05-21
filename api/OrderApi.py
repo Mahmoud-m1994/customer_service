@@ -5,7 +5,6 @@ import requests
 from dotenv import load_dotenv
 from flask import Blueprint, request, jsonify
 from database.DatabaseManager import get_single_row, get_multiple_rows, create_single_row, delete_or_update_row, _Action
-from datetime import datetime
 
 load_dotenv()
 order_api = Blueprint('orders_api', __name__)
@@ -46,10 +45,8 @@ def create_order():
 @order_api.route('/order/<int:order_id>/products', methods=['POST'])
 def add_product_to_order(order_id):
     try:
-        # Get the JSON data from the request
         product_data = request.get_json()
 
-        # Call the create_single_row function to add the product to the order
         result = create_single_row('OrderProducts', {
             'OrderID': order_id,
             'ProductID': product_data['ProductID'],
@@ -88,10 +85,8 @@ def get_orders():
 @order_api.route('/order/<int:order_id>', methods=['PUT'])
 def update_order(order_id):
     try:
-        # Get the JSON data from the request
         order_data = request.get_json()
 
-        # Call the delete_or_update_row function to update the order
         result = delete_or_update_row('Orders', order_id, 'OrderID', _Action.UPDATE, order_data)
 
         return jsonify({'order_id': order_id, 'success': result,

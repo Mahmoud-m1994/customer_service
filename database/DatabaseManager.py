@@ -29,7 +29,6 @@ def get_single_row(table_name: str, get_by_column: str, id: int):
         row = cursor.fetchone()
 
         if row:
-            # Convert row to dictionary
             row_dict = {}
             for column, value in zip([column[0] for column in cursor.description], row):
                 if isinstance(value, datetime):

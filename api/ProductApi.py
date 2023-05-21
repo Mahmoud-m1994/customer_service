@@ -9,10 +9,8 @@ product_api = Blueprint('product_api', __name__)
 @product_api.route('/product', methods=['POST'])
 def create_product():
     try:
-        # Get the JSON data from the request
         product_data = request.get_json()
 
-        # Call the create_single_row function to create a new product
         result = create_single_row('Product1', product_data)
 
         if result:
@@ -47,10 +45,8 @@ def get_products():
 @product_api.route('/product/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
     try:
-        # Get the JSON data from the request
         product_data = request.get_json()
 
-        # Call the delete_or_update_row function to update the product
         result = delete_or_update_row('Product1', product_id, 'ProductID', _Action.UPDATE, product_data)
 
         return jsonify({'product_id': product_id, 'success': result, 'message': 'product updated successfully' if result else 'Failed to update product'}), 200

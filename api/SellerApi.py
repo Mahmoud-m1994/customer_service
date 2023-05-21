@@ -9,10 +9,8 @@ seller_api = Blueprint('seller_api', __name__)
 @seller_api.route('/seller', methods=['POST'])
 def create_seller():
     try:
-        # Get the JSON data from the request
         seller_data = request.get_json()
 
-        # Call the create_single_row function to create a new seller
         result = create_single_row('Sellers', seller_data)
 
         if result:
@@ -47,10 +45,8 @@ def get_sellers():
 @seller_api.route('/seller/<int:seller_id>', methods=['PUT'])
 def update_seller(seller_id):
     try:
-        # Get the JSON data from the request
         seller_data = request.get_json()
 
-        # Call the delete_or_update_row function to update the seller
         result = delete_or_update_row('Sellers', seller_id, 'SellerID', _Action.UPDATE, seller_data)
 
         return jsonify({'seller_id': seller_id, 'success': result, 'message': 'Seller updated successfully' if result else 'Failed to update seller'}), 200
